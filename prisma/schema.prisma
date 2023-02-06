@@ -1,0 +1,158 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("MYSQL_URL")
+}
+
+model Hotel {
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  id                     String    @id @default(uuid()) @db.VarChar(32)
+  happyHotelId           String?   @map("happy_hotel_id") @db.VarChar(32)
+  hotelType              String    @map("hotel_type") @db.VarChar(64)
+  lng                    Decimal   @db.Decimal(11, 8)
+  lat                    Decimal   @db.Decimal(11, 8)
+  name                   String?   @db.VarChar(255)
+  address                String?   @db.VarChar(255)
+  url                    String?   @db.VarChar(1024)
+  homepage               String?   @db.VarChar(1024)
+  tel                    String?   @db.VarChar(32)
+  pr                     String?   @db.VarChar(1024)
+  score                  Decimal   @default(0.0) @db.Decimal(2, 1)
+  singlePrice            Int?      @map("single_price") @db.Int
+  restMinPrice           Int?      @map("rest_min_price") @db.Int
+  lodgingMinPrice        Int?      @map("lodging_min_price") @db.Int
+  transferTimeByWalk     String?   @map("transfer_time_by_walk") @db.VarChar(255)
+  transferTimeByDrive    String?   @map("transfer_time_by_drive") @db.VarChar(255)
+  roomCount              Int?      @map("room_count") @db.TinyInt
+  parkingCount           Int?      @map("parking_count") @db.TinyInt
+  parkingCountByHighroof Int?      @map("parking_count_by_highroof") @db.TinyInt
+  parkingDescription     String?   @map("parking_description") @db.VarChar(1024)
+  mapcode                String?   @db.VarChar(255)
+  pricingPlans           Json?     @map("pricing_plans")
+  onlineBooking          Boolean   @default(false) @map("online_booking")
+  onlineChecking         Boolean   @default(false) @map("online_checking")
+  /// @HideField({ match: '*' })
+  thumbnails             Thumbnail[]
+  /// @HideField({ match: '*' })
+  vacancy                Vacancy?
+  /// @HideField({ match: '*' })
+  rooms                  Room[]
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  createdAt              DateTime  @default(now()) @map("created_at") @db.DateTime(0)
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  updatedAt              DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
+  @@unique([happyHotelId])
+  @@index([id])
+  @@index([lng, lat])
+  @@map("hotels")
+}
+
+model Vacancy {
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  id                     String    @id @default(uuid()) @db.VarChar(32)
+  hotelId                String    @map("hotel_id") @db.VarChar(32)
+  hotel                  Hotel     @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  empty                  Boolean   @default(false) @map("empty")
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  createdAt              DateTime  @default(now()) @map("created_at") @db.DateTime(0)
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  updatedAt              DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
+  @@unique([hotelId])
+  @@index([hotelId])
+  @@map("vacancies")
+}
+
+model Thumbnail {
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  id                     String    @id @default(uuid()) @db.VarChar(32)
+  hotelId                String    @map("hotel_id") @db.VarChar(32)
+  hotel                  Hotel     @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  /// @HideField({ match: '*' })
+  ThumbnailImages        ThumbnailImage[]
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  createdAt              DateTime  @default(now()) @map("created_at") @db.DateTime(0)
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  updatedAt              DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
+  @@index([hotelId])
+  @@map("thumbnails")
+}
+
+model ThumbnailImage {
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  id                     String    @id @default(uuid()) @db.VarChar(32)
+  size                   String    @map("size") @default("original") @db.VarChar(32)
+  thumbnailId            String    @map("thumbnail_id") @db.VarChar(32)
+  thumbnail              Thumbnail @relation(fields: [thumbnailId], references: [id], onDelete: Cascade)
+  imageId                String    @map("image_id") @db.VarChar(32)
+  image                  Image     @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  createdAt              DateTime  @default(now()) @map("created_at") @db.DateTime(0)
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  updatedAt              DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
+  // @@index([thumbnailId])
+  @@index([thumbnailId])
+  @@map("thumbnail_images")
+}
+
+model Room {
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  id                     String    @id @default(uuid()) @db.VarChar(32)
+  name                   String    @map("name") @db.VarChar(32)
+  hotelId                String    @map("hotel_id") @db.VarChar(32)
+  hotel                  Hotel     @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  /// @HideField({ match: '*' })
+  roomImages             RoomImage[]
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  createdAt              DateTime  @default(now()) @map("created_at") @db.DateTime(0)
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  updatedAt              DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
+  @@index([hotelId])
+  @@map("rooms")
+}
+
+model RoomImage {
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  id                     String    @id @default(uuid()) @db.VarChar(32)
+  size                   String    @map("size") @default("original") @db.VarChar(32)
+  roomId                 String    @map("room_id") @db.VarChar(32)
+  room                   Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  imageId                String    @map("image_id") @db.VarChar(32)
+  image                  Image     @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  createdAt              DateTime  @default(now()) @map("created_at") @db.DateTime(0)
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  updatedAt              DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
+  @@index([roomId])
+  @@map("room_images")
+}
+
+model Image {
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  id                     String    @id @default(uuid()) @db.VarChar(32)
+  mimeType               String    @map("mime_type") @db.VarChar(64)
+  url                    String    @db.VarChar(1024)
+  width                  Int       @db.SmallInt
+  height                 Int       @db.SmallInt
+  /// @HideField({ match: '*' })
+  thumbnailImages        ThumbnailImage[]
+  roomImages             RoomImage[]
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  createdAt              DateTime  @default(now()) @map("created_at") @db.DateTime(0)
+  /// @HideField({ match: '*@(Create|Update)*Input' })
+  updatedAt              DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
+  @@map("images")
+}
+
+// model Plan {
+//   /// @HideField({ match: '*@(Create|Update)*Input' })
+//   createdAt              DateTime @default(now()) @map("created_at") @db.DateTime(0)
+//   /// @HideField({ match: '*@(Create|Update)*Input' })
+//   updatedAt              DateTime @updatedAt @map("updated_at") @db.DateTime(0)
+//   @@map("plans")
+// }

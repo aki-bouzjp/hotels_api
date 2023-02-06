@@ -1,0 +1,57 @@
+version: '2'
+services:
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file: .env.development
+    tty: true
+    stdin_open: true
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - 8080:8080
+    volumes:
+      - .:/app
+    networks:
+      - app-network
+  mysql:
+    image: mysql:8.0.27
+    platform: linux/amd64
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+    restart: always
+    command: mysqld --innodb_use_native_aio=0
+    healthcheck:
+      test: mysqladmin -h 127.0.0.1 -uuser -ppassword ping
+      timeout: 20s
+      retries: 10
+    networks:
+      - app-network
+  cli:
+    image: mysql:8.0.27
+    platform: linux/amd64
+    tty: true
+    stdin_open: true
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app-network
+    command: mysql -h mysql -uroot -ppassword db
+  redis:
+    image: "redis:alpine"
+    ports:
+      - 6379:6379
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
