@@ -29,9 +29,9 @@ model Hotel {
   lodgingMinPrice        Int?      @map("lodging_min_price") @db.Int
   transferTimeByWalk     String?   @map("transfer_time_by_walk") @db.VarChar(255)
   transferTimeByDrive    String?   @map("transfer_time_by_drive") @db.VarChar(255)
-  roomCount              Int?      @map("room_count") @db.TinyInt
-  parkingCount           Int?      @map("parking_count") @db.TinyInt
-  parkingCountByHighroof Int?      @map("parking_count_by_highroof") @db.TinyInt
+  roomCount              Int?      @map("room_count") @db.Int
+  parkingCount           Int?      @map("parking_count") @db.Int
+  parkingCountByHighroof Int?      @map("parking_count_by_highroof") @db.Int
   parkingDescription     String?   @map("parking_description") @db.VarChar(1024)
   mapcode                String?   @db.VarChar(255)
   pricingPlans           Json?     @map("pricing_plans")
@@ -104,6 +104,7 @@ model Room {
   /// @HideField({ match: '*@(Create|Update)*Input' })
   id                     String    @id @default(uuid()) @db.VarChar(32)
   name                   String    @map("name") @db.VarChar(32)
+  groupName              String?   @map("group_name") @db.VarChar(64)
   hotelId                String    @map("hotel_id") @db.VarChar(32)
   hotel                  Hotel     @relation(fields: [hotelId], references: [id], onDelete: Cascade)
   /// @HideField({ match: '*' })

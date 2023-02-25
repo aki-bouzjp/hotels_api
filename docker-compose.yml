@@ -13,6 +13,8 @@ services:
         condition: service_healthy
     ports:
       - 8080:8080
+    expose:
+      - 8080:8080
     volumes:
       - .:/app
     networks:
@@ -21,6 +23,8 @@ services:
     image: mysql:8.0.27
     platform: linux/amd64
     ports:
+      - 3306:3306
+    expose:
       - 3306:3306
     environment:
       MYSQL_DATABASE: db
@@ -50,8 +54,10 @@ services:
     image: "redis:alpine"
     ports:
       - 6379:6379
+    expose:
+      - 6379:6379
     networks:
       - app-network
 networks:
   app-network:
-    driver: bridge
+    external: true

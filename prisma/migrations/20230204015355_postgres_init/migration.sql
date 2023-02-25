@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE `hotels` (
-    `id` VARCHAR(32) DEFAULT (uuid_short()) NOT NULL,
+    `id` VARCHAR(32) DEFAULT (uuid()) NOT NULL,
     `happy_hotel_id` VARCHAR(32) NULL,
     `hotel_type` VARCHAR(64) NOT NULL,
     `lng` DECIMAL(11, 8) NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE `hotels` (
 
 -- CreateTable
 CREATE TABLE `vacancies` (
-    `id` VARCHAR(32) DEFAULT (uuid_short()) NOT NULL,
+    `id` VARCHAR(32) DEFAULT (uuid()) NOT NULL,
     `hotel_id` VARCHAR(32) NOT NULL,
     `empty` BOOLEAN NOT NULL DEFAULT false,
     `created_at` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
@@ -49,7 +49,7 @@ CREATE TABLE `vacancies` (
 
 -- CreateTable
 CREATE TABLE `thumbnails` (
-    `id` VARCHAR(32) DEFAULT (uuid_short()) NOT NULL,
+    `id` VARCHAR(32) DEFAULT (uuid()) NOT NULL,
     `hotel_id` VARCHAR(32) NOT NULL,
     `created_at` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NOT NULL,
@@ -60,7 +60,7 @@ CREATE TABLE `thumbnails` (
 
 -- CreateTable
 CREATE TABLE `thumbnail_images` (
-    `id` VARCHAR(32) DEFAULT (uuid_short()) NOT NULL,
+    `id` VARCHAR(32) DEFAULT (uuid()) NOT NULL,
     `size` VARCHAR(32) NOT NULL DEFAULT 'original',
     `thumbnail_id` VARCHAR(32) NOT NULL,
     `image_id` VARCHAR(32) NOT NULL,
@@ -73,7 +73,7 @@ CREATE TABLE `thumbnail_images` (
 
 -- CreateTable
 CREATE TABLE `rooms` (
-    `id` VARCHAR(32) DEFAULT (uuid_short()) NOT NULL,
+    `id` VARCHAR(32) DEFAULT (uuid()) NOT NULL,
     `name` VARCHAR(32) NOT NULL,
     `hotel_id` VARCHAR(32) NOT NULL,
     `created_at` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
@@ -85,7 +85,7 @@ CREATE TABLE `rooms` (
 
 -- CreateTable
 CREATE TABLE `room_images` (
-    `id` VARCHAR(32) DEFAULT (uuid_short()) NOT NULL,
+    `id` VARCHAR(32) DEFAULT (uuid()) NOT NULL,
     `size` VARCHAR(32) NOT NULL DEFAULT 'original',
     `room_id` VARCHAR(32) NOT NULL,
     `image_id` VARCHAR(32) NOT NULL,
@@ -98,7 +98,7 @@ CREATE TABLE `room_images` (
 
 -- CreateTable
 CREATE TABLE `images` (
-    `id` VARCHAR(32) DEFAULT (uuid_short()) NOT NULL,
+    `id` VARCHAR(32) DEFAULT (uuid()) NOT NULL,
     `mime_type` VARCHAR(64) NOT NULL,
     `url` VARCHAR(1024) NOT NULL,
     `width` SMALLINT NOT NULL,

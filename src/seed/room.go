@@ -10,11 +10,12 @@ import (
 
 var roomCountByHotel = 9
 
-func generateSeedRoom(name string, hotelId string) *model.Room {
+func generateSeedRoom(name string, groupName string, hotelId string) *model.Room {
 	return &model.Room{
-		ID:      UuidV4(),
-		Name:    name,
-		HotelID: hotelId,
+		ID:        UuidV4(),
+		Name:      name,
+		GroupName: groupName,
+		HotelID:   hotelId,
 	}
 }
 
@@ -25,7 +26,7 @@ func seedRooms(db *db.DB, hotels []*model.Hotel) []*model.Room {
 	for hotelIndex := 0; hotelIndex < hotelTotalCount; hotelIndex++ {
 		for roomIndex := 0; roomIndex < roomCountByHotel; roomIndex++ {
 			hotelID := hotels[hotelIndex].ID
-			r := generateSeedRoom("test room "+strconv.Itoa(hotelIndex+1), hotelID)
+			r := generateSeedRoom("test room "+strconv.Itoa(hotelIndex+1), "", hotelID)
 			if err := db.Conn.Create(&r).Error; err != nil {
 				fmt.Printf("%+v", err)
 				continue
